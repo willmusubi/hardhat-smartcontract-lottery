@@ -6,7 +6,7 @@ const {
 } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
-const VRF_SUB_FUND_AMOUNT = 1e18;
+const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("1"); // 1 Ether, or 1e18 (10^18) Wei
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments;
@@ -19,11 +19,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     // uint64 subscriptionId, get the id from the transaction event for the local testing, get it from UI for the network
     // uint32 callbackGasLimit, varies from network to network
     // uint256 timeInterval
-    let vrfCoordinatorV2Address, subscriptionId;
+    let vrfCoordinatorV2Address, subscriptionId, vrfCoordinatorV2Mock;
     if (developmentChains.includes(network.name)) {
-        const vrfCoordinatorV2Mock = await deployments.get(
-            "VRFCoordinatorV2Mock"
-        );
+        vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock");
         vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address; // the mocks we deployed
         // subscription is emmited within an event ommited from Mocking contract transaction receipt, so we need to get a receipt here
         const txResponse = await vrfCoordinatorV2Mock.createSubscription();

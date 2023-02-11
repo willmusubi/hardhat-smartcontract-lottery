@@ -1,7 +1,7 @@
-const { network, ethers } = require("hardhat");
+const { network } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
 
-const BASE_FEE = "250000000000000000"; // 0.25 is the premium, it costs 0.25 link
+const BASE_FEE = ethers.utils.parseEther("0.25"); // 0.25 is the premium, it costs 0.25 link
 const GAS_PRICE_LINK = 1e9; // Link per gas. calcuated value based on the gas price of the chain, chainlink afford expenses of for calling other external calls onchain.
 
 module.exports = async ({ getNamedAccounts, deployments }) => {

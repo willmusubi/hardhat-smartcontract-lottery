@@ -7,9 +7,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
+import "hardhat/console.sol";
 
 error Lottery__NotEnoughETHEntered();
 error Lottery__TransferFailed();
@@ -17,7 +18,7 @@ error Lottery__NotOpen();
 error Lottery__UpkeepNeeded(
     uint256 currentBalance,
     uint256 numPlayers,
-    uint256 raffleState
+    uint256 lotteryState
 );
 
 /**@title A sample decentralized Lottery Contract, removing all blackboxes
@@ -70,12 +71,16 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
         s_lotteryState = LotteryState.OPEN;
+        s_lastTimeStamp = block.timestamp;
         i_timeInterval = timeInterval;
     }
 
     function enterLottery() public payable {
         if (msg.value < i_entranceFee) {
             revert Lottery__NotEnoughETHEntered();
+        }
+        if (s_lotteryState != LotteryState.OPEN) {
+            revert Lottery__NotOpen();
         }
         s_players.push(payable(msg.sender));
         emit LotteryEnter(msg.sender);
@@ -85,7 +90,7 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
      * @dev This is the function that the Chainlink Keeper nodes call
      * they look for `upkeepNeeded` to return True.
      * the following should be true for this to return true:
-     * 1. The time interval has passed between raffle runs.
+     * 1. The time interval has passed between lottery runs.
      * 2. The lottery is open. // we don't want people join we are requesting the random number
      * 3. The contract has ETH.
      * 4. Implicity, your subscription is funded with LINK.

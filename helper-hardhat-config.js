@@ -7,7 +7,7 @@ const networkConfig = {
         entranceFee: ethers.utils.parseEther("0.01"),
         gasLane:
             "0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15",
-        subscriptionId: "0",
+        subscriptionId: "9629", // get it from the Chainlink Subscription Account
         callbackGasLimit: "500000", // fake it for now
         timeInterval: "30", // 30 seconds
     },

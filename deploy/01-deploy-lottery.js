@@ -50,12 +50,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         callbackGasLimit,
         timeInterval,
     ];
+
     const lottery = await deploy("Lottery", {
         from: deployer,
         args: args,
         log: true,
         waitConfirmations: network.config.blockConfirmations || 1,
     });
+
+    // Ensure the Raffle contract is a valid consumer of the VRFCoordinatorV2Mock contract.
+    if (developmentChains.includes(network.name)) {
+        const vrfCoordinatorV2Mock = await ethers.getContract(
+            "VRFCoordinatorV2Mock"
+        );
+        await vrfCoordinatorV2Mock.addConsumer(subscriptionId, lottery.address);
+    }
 
     if (
         !developmentChains.includes(network.name) &&

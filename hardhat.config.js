@@ -52,4 +52,7 @@ module.exports = {
             default: 1,
         },
     },
+    mocha: {
+        timeout: 200000, // milseconds, which is 200 seconds. it's for testing purpose
+    },
 };

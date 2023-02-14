@@ -16,3 +16,5 @@ async function verify(address, args) {
         }
     }
 }
+
+module.exports = { verify };

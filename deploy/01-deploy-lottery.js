@@ -33,7 +33,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
             VRF_SUB_FUND_AMOUNT
         );
     } else {
-        vrfCoordinatorV2Address = networkConfig[chainId]["VRFCoordinatorV2"];
+        vrfCoordinatorV2Address = networkConfig[chainId]["vrfCoordinatorV2"];
         subscriptionId = networkConfig[chainId]["subscriptionId"];
         // for the testnet, we can get subscription id directly from the UI and import it from helper-hardhat-config.js
     }

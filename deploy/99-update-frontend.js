@@ -1,5 +1,6 @@
 const { ethers, network } = require("hardhat");
 const fs = require("fs");
+
 const {
     frontEndAddressFile,
     frontEndAbiFile,
@@ -8,8 +9,9 @@ const {
 module.exports = async function () {
     if (process.env.UPDATE_FRONT_END) {
         console.log("Updating frontend...");
-        updateContractAddresses();
-        updateAbi();
+        await updateContractAddresses();
+        await updateAbi();
+        console.log("Frontend Updated!");
     }
 };
 
@@ -28,13 +30,12 @@ async function updateContractAddresses() {
         fs.readFileSync(frontEndAddressFile, "utf8")
     );
     const currentAddress = lottery.address;
-    if (
-        chainId in contractAddresses &&
-        !contractAddresses[chainId].includes(currentAddress)
-    ) {
-        contractAddresses[chainId].push(currentAddress);
+    if (chainId in contractAddresses) {
+        if (!contractAddresses[chainId].includes(currentAddress)) {
+            contractAddresses[chainId].push(currentAddress);
+        }
     } else {
-        contractAddresses[chainId] = currentAddress;
+        contractAddresses[chainId] = [currentAddress];
     }
     fs.writeFileSync(frontEndAddressFile, JSON.stringify(contractAddresses));
 }

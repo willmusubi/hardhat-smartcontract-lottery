@@ -201,4 +201,10 @@ contract Lottery is VRFConsumerBaseV2, AutomationCompatibleInterface {
     function getTimeInterval() public view returns (uint256) {
         return i_timeInterval;
     }
+
+    // * receive function
+    receive() external payable {}
+
+    // * fallback function
+    fallback() external payable {}
 }
